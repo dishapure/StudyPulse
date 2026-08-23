@@ -5,9 +5,21 @@ import boto3
 # AWS CLIENTS
 # ============================================================
 
-dynamodb = boto3.resource("dynamodb", region_name="ap-south-1")
-bedrock = boto3.client("bedrock-runtime", region_name="ap-south-1")
-ses = boto3.client("ses", region_name="ap-south-1")
+dynamodb = boto3.resource(
+    "dynamodb",
+    region_name="ap-south-1"
+)
+
+bedrock = boto3.client(
+    "bedrock-runtime",
+    region_name="ap-south-1"
+)
+
+ses = boto3.client(
+    "ses",
+    region_name="ap-south-1"
+)
+
 
 # ============================================================
 # CONFIGURATION
@@ -18,9 +30,14 @@ TABLE_NAME = "StudyPulseMemory"
 # Amazon Nova Micro APAC inference profile
 MODEL_ID = "apac.amazon.nova-micro-v1:0"
 
+# ============================================================
 # IMPORTANT:
-# Replace this with the EXACT email address you verified in SES.
+# Put the EXACT email address that SES shows as VERIFIED.
+# Use the same address as sender and recipient for now.
+# ============================================================
+
 EMAIL_ADDRESS = "disha.boston@gmail.com"
+
 
 # ============================================================
 # DYNAMODB TABLE
@@ -35,10 +52,12 @@ table = dynamodb.Table(TABLE_NAME)
 
 def lambda_handler(event, context):
 
+    print("========================================")
     print("StudyPulse agent started.")
+    print("========================================")
 
     # --------------------------------------------------------
-    # 1. READ STUDENT MEMORY FROM DYNAMODB
+    # 1. READ STUDENT MEMORY
     # --------------------------------------------------------
 
     response = table.get_item(
@@ -50,7 +69,8 @@ def lambda_handler(event, context):
     student = response.get("Item")
 
     if not student:
-        print("Student memory not found.")
+
+        print("ERROR: Student memory not found.")
 
         return {
             "statusCode": 404,
@@ -61,20 +81,49 @@ def lambda_handler(event, context):
 
     print("Student memory loaded successfully.")
 
-    # --------------------------------------------------------
-    # 2. EXTRACT STUDENT INFORMATION
-    # --------------------------------------------------------
-
-    name = student.get("name", "Student")
-    subjects = student.get("subjects", "Not specified")
-    exam = student.get("exam", "Not specified")
-    weak_topics = student.get("weakTopics", "Not specified")
-    study_minutes = student.get("studyMinutes", 45)
-    last_completed = student.get("lastCompleted", "None")
-    previous_plan = student.get("lastPlan", "None")
 
     # --------------------------------------------------------
-    # 3. BUILD THE AGENT PROMPT
+    # 2. GET STUDENT INFORMATION
+    # --------------------------------------------------------
+
+    name = student.get(
+        "name",
+        "Student"
+    )
+
+    subjects = student.get(
+        "subjects",
+        "Not specified"
+    )
+
+    exam = student.get(
+        "exam",
+        "Not specified"
+    )
+
+    weak_topics = student.get(
+        "weakTopics",
+        "Not specified"
+    )
+
+    study_minutes = student.get(
+        "studyMinutes",
+        45
+    )
+
+    last_completed = student.get(
+        "lastCompleted",
+        "None"
+    )
+
+    previous_plan = student.get(
+        "lastPlan",
+        "None"
+    )
+
+
+    # --------------------------------------------------------
+    # 3. CREATE AI PROMPT
     # --------------------------------------------------------
 
     prompt = f"""
@@ -86,19 +135,35 @@ You have access to the student's stored learning memory.
 
 STUDENT INFORMATION
 -------------------
-Name: {name}
-Subjects: {subjects}
-Upcoming exam: {exam}
-Weak topics: {weak_topics}
-Available study time: {study_minutes} minutes
-Last completed topic: {last_completed}
+
+Name:
+{name}
+
+Subjects:
+{subjects}
+
+Upcoming exam:
+{exam}
+
+Weak topics:
+{weak_topics}
+
+Available study time:
+{study_minutes} minutes
+
+Last completed topic:
+{last_completed}
+
 
 PREVIOUS STUDY PLAN
 -------------------
+
 {previous_plan}
+
 
 YOUR TASK
 ---------
+
 Analyze the student's current information and create a focused,
 realistic study plan for today.
 
@@ -129,18 +194,22 @@ CHALLENGE:
 Keep the response concise and practical.
 """
 
+
     print("Sending request to Amazon Nova Micro.")
+
 
     # --------------------------------------------------------
     # 4. INVOKE AMAZON NOVA MICRO
     # --------------------------------------------------------
 
-    response = bedrock.converse(
+    bedrock_response = bedrock.converse(
+
         modelId=MODEL_ID,
 
         messages=[
             {
                 "role": "user",
+
                 "content": [
                     {
                         "text": prompt
@@ -155,25 +224,32 @@ Keep the response concise and practical.
         }
     )
 
+
     # --------------------------------------------------------
     # 5. EXTRACT AI RESPONSE
     # --------------------------------------------------------
 
     study_plan = (
-        response["output"]
+        bedrock_response
+        ["output"]
         ["message"]
         ["content"][0]
         ["text"]
     )
 
+
     print("Study plan generated successfully.")
+    print("----------------------------------------")
     print(study_plan)
+    print("----------------------------------------")
+
 
     # --------------------------------------------------------
-    # 6. SAVE NEW MEMORY TO DYNAMODB
+    # 6. SAVE PLAN TO DYNAMODB
     # --------------------------------------------------------
 
     table.update_item(
+
         Key={
             "studentId": "disha"
         },
@@ -187,29 +263,42 @@ Keep the response concise and practical.
         }
     )
 
+
     print("Study plan saved to DynamoDB.")
 
+
     # --------------------------------------------------------
-    # 7. SEND STUDY PLAN THROUGH AMAZON SES
+    # 7. CREATE EMAIL
     # --------------------------------------------------------
 
-    email_subject = "☀️ Your StudyPulse for Today"
+    email_subject = "Your StudyPulse Plan for Today"
 
     email_body = f"""
 Hi {name},
 
-Your StudyPulse for today is ready.
+Your StudyPulse plan for today is ready.
 
-----------------------------------------
+========================================
+
 {study_plan}
-----------------------------------------
 
-Keep the momentum going. Small progress every day compounds.
+========================================
 
-— StudyPulse 🤖
+Keep the momentum going.
+Small progress every day compounds.
+
+— StudyPulse AI
 """
 
-    ses.send_email(
+
+    # --------------------------------------------------------
+    # 8. SEND EMAIL USING AMAZON SES
+    # --------------------------------------------------------
+
+    print("Sending study plan through Amazon SES...")
+
+
+    ses_response = ses.send_email(
 
         Source=EMAIL_ADDRESS,
 
@@ -235,22 +324,42 @@ Keep the momentum going. Small progress every day compounds.
         }
     )
 
-    print("Study plan email sent successfully.")
 
     # --------------------------------------------------------
-    # 8. RETURN SUCCESS
+    # 9. PRINT SES MESSAGE ID
+    # --------------------------------------------------------
+
+    message_id = ses_response.get(
+        "MessageId",
+        "No MessageId returned"
+    )
+
+    print("========================================")
+    print("EMAIL ACCEPTED BY AMAZON SES")
+    print("SES Message ID:", message_id)
+    print("========================================")
+
+
+    # --------------------------------------------------------
+    # 10. RETURN SUCCESS
     # --------------------------------------------------------
 
     return {
+
         "statusCode": 200,
 
         "body": json.dumps({
 
-            "message": "StudyPulse generated and delivered today's plan!",
+            "message":
+                "StudyPulse generated and delivered today's plan!",
 
-            "student": name,
+            "student":
+                name,
 
-            "studyPlan": study_plan
+            "studyPlan":
+                study_plan,
 
+            "sesMessageId":
+                message_id
         })
     }

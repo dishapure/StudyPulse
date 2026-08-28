@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StudyPulse — Autonomous AI Study Agent</title>
+
+    <meta
+        name="description"
+        content="StudyPulse is an autonomous AI study agent powered by AWS that remembers learning context, generates personalized study plans, and delivers them automatically."
+    >
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <a href="#" class="brand">
+        <div class="brand-mark">✦</div>
+
+        <div>
+            <strong>StudyPulse</strong>
+            <span>Autonomous Study Agent</span>
+        </div>
+    </a>
+
+    <nav>
+        <a href="#live">Live Agent</a>
+        <a href="#how">How It Works</a>
+        <a href="#aws">AWS Stack</a>
+    </nav>
+
+    <a
+        href="https://github.com/dishapure/StudyPulse"
+        target="_blank"
+        class="github-nav"
+    >
+        GitHub ↗
+    </a>
+
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<main>
+
+<section class="hero">
+
+    <div class="hero-background"></div>
+
+    <div class="hero-content">
+
+        <div class="status-badge">
+            <span class="pulse-dot"></span>
+            LIVE · AWS POWERED
+        </div>
+
+        <h1>
+            Your study plan
+            <em>before you ask.</em>
+        </h1>
+
+        <p class="hero-text">
+            StudyPulse is an autonomous AI study agent that remembers
+            your learning context, decides what deserves your attention,
+            creates a personalized plan, and delivers it automatically.
+        </p>
+
+        <div class="hero-actions">
+
+            <a href="#live" class="primary-btn">
+                Run the Live Agent
+                <span>→</span>
+            </a>
+
+            <a href="#how" class="ghost-btn">
+                Explore the architecture
+            </a>
+
+        </div>
+
+        <div class="hero-proof">
+
+            <div>
+                <strong>24/7</strong>
+                <span>Autonomous</span>
+            </div>
+
+            <div>
+                <strong>AI</strong>
+                <span>Personalized</span>
+            </div>
+
+            <div>
+                <strong>AWS</strong>
+                <span>Serverless</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- HERO VISUAL -->
+
+    <div class="hero-visual">
+
+        <div class="glow"></div>
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-top">
+
+                <div>
+                    <span class="tiny-label">STUDYPULSE</span>
+                    <strong>Daily Intelligence</strong>
+                </div>
+
+                <span class="live-label">
+                    <span class="pulse-dot"></span>
+                    LIVE
+                </span>
+
+            </div>
+
+            <div class="focus-area">
+
+                <span>TODAY'S PRIORITY</span>
+
+                <h2>Networking</h2>
+
+                <p>
+                    Identified from your learning memory
+                    and upcoming exam requirements.
+                </p>
+
+            </div>
+
+            <div class="progress-line">
+                <span></span>
+            </div>
+
+            <div class="dashboard-footer">
+
+                <div>
+                    <small>FOCUS</small>
+                    <strong>45 min</strong>
+                </div>
+
+                <div>
+                    <small>TASKS</small>
+                    <strong>03</strong>
+                </div>
+
+                <div>
+                    <small>CHALLENGE</small>
+                    <strong>01</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="floating-card memory-card">
+            <span>🧠</span>
+            <div>
+                <strong>Memory loaded</strong>
+                <small>DynamoDB</small>
+            </div>
+        </div>
+
+        <div class="floating-card ai-card">
+            <span>✦</span>
+            <div>
+                <strong>Plan generated</strong>
+                <small>Nova Micro</small>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= LIVE AGENT ================= -->
+ <section class="live-agent-section" id="live">
+
+    <div class="agent-header">
+
+        <div>
+            <div class="eyebrow">INTERACT WITH THE AGENT</div>
+
+            <h2>
+                Tell StudyPulse what you need.
+            </h2>
+
+            <p>
+                StudyPulse combines your request with its
+                persistent learning memory to create a fresh plan.
+            </p>
+        </div>
+
+        <div class="agent-status">
+            <span></span>
+            AGENT ONLINE
+        </div>
+
+    </div>
+
+
+    <div class="agent-console">
+
+        <div class="console-top">
+            <div>
+                <span class="console-dot"></span>
+                STUDYPULSE AGENT
+            </div>
+
+            <span>BEDROCK · MEMORY · AUTOMATION</span>
+        </div>
+
+
+        <div class="input-grid">
+
+            <div class="input-group full">
+
+                <label>What do you want to study?</label>
+
+                <input
+                    id="topic-input"
+                    type="text"
+                    placeholder="e.g. AWS VPC networking"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>How much time?</label>
+
+                <select id="time-input">
+
+                    <option value="30 minutes">
+                        30 minutes
+                    </option>
+
+                    <option value="45 minutes" selected>
+                        45 minutes
+                    </option>
+
+                    <option value="60 minutes">
+                        1 hour
+                    </option>
+
+                    <option value="90 minutes">
+                        1.5 hours
+                    </option>
+
+                    <option value="120 minutes">
+                        2 hours
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>Difficulty</label>
+
+                <select id="difficulty-input">
+
+                    <option value="Beginner">
+                        Beginner
+                    </option>
+
+                    <option value="Intermediate" selected>
+                        Intermediate
+                    </option>
+
+                    <option value="Advanced">
+                        Advanced
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="input-group full">
+
+                <label>What's your goal?</label>
+
+                <input
+                    id="goal-input"
+                    type="text"
+                    placeholder="e.g. Prepare for my AZ-104 exam"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="quick-topics">
+
+            <span>Quick start:</span>
+
+            <button onclick="setTopic('AWS VPC networking')">
+                VPC
+            </button>
+
+            <button onclick="setTopic('IAM security')">
+                IAM
+            </button>
+
+            <button onclick="setTopic('Python')">
+                Python
+            </button>
+
+            <button onclick="setTopic('Cybersecurity')">
+                Cybersecurity
+            </button>
+
+        </div>
+
+
+        <button
+            id="generate-btn"
+            class="agent-generate"
+            onclick="generateStudyPlan()"
+        >
+            <span>⚡</span>
+            Generate My Personalized Plan
+        </button>
+
+
+        <div id="agent-thinking" class="agent-thinking hidden">
+
+            <div class="thinking-line">
+                <span></span>
+                Reading persistent memory...
+            </div>
+
+            <div class="thinking-line">
+                <span></span>
+                Reasoning with Nova Micro...
+            </div>
+
+            <div class="thinking-line">
+                <span></span>
+                Building your study plan...
+            </div>
+
+        </div>
+
+
+        <div id="study-result"></div>
+
+    </div>
+
+</section>
+
+<!-- ================= LEARNED ================= -->
+
+<section class="section lesson-section">
+
+    <div class="lesson-box">
+
+        <div>
+            <div class="section-tag">05 · WHAT I LEARNED</div>
+
+            <h2>
+                An agent is more than an LLM.
+            </h2>
+        </div>
+
+        <div class="lesson-text">
+
+            <p>
+                Building StudyPulse taught me that the useful part
+                of an AI agent isn't simply generating text.
+            </p>
+
+            <p>
+                The real value comes from connecting AI reasoning
+                with memory, triggers, persistent state and actions.
+            </p>
+
+            <div class="lesson-chain">
+                <span>Memory</span>
+                <b>+</b>
+                <span>Reasoning</span>
+                <b>+</b>
+                <span>Automation</span>
+                <b>+</b>
+                <span>Action</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CTA ================= -->
+
+<section class="final-section">
+
+    <div class="final-glow"></div>
+
+    <div class="final-content">
+
+        <div class="section-tag">STUDYPULSE · 2026</div>
+
+        <h2>
+            The best study plan
+            is the one you never
+            have to remember to ask for.
+        </h2>
+
+        <p>
+            An autonomous AI study agent built with AWS.
+        </p>
+
+        <div class="final-buttons">
+
+            <a
+                href="https://github.com/dishapure/StudyPulse"
+                target="_blank"
+                class="primary-btn"
+            >
+                View GitHub →
+            </a>
+
+            <a href="#live" class="ghost-btn">
+                Run the Agent
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div class="footer-brand">
+        <span>✦</span>
+        StudyPulse
+    </div>
+
+    <p>
+        Autonomous AI study planning · Powered by AWS
+    </p>
+
+    <p class="footer-small">
+        Built for the AWS Weekend Showcase Challenge · 2026
+    </p>
+
+</footer>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>

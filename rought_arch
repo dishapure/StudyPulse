@@ -1,0 +1,21 @@
+                    ┌──────────────────────────────┐
+                    │ Amazon EventBridge Scheduler  │
+                    │        Daily Trigger          │
+                    └──────────────┬───────────────┘
+                                   │
+                                   ▼
+Student → S3 → API Gateway → Lambda / StudyPulse Agent
+                              │       │
+                    ┌─────────┘       └──────────┐
+                    ▼                            ▼
+             DynamoDB Memory              Amazon Bedrock
+             StudyPulseMemory              Nova Micro
+                    │                            │
+                    └───────────┬────────────────┘
+                                ▼
+                         Personalized Plan
+                                │
+                    ┌───────────┴───────────┐
+                    ▼                       ▼
+              Web Application         Amazon SES
+                                      Email Delivery
